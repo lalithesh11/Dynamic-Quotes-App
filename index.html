@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
+        integrity="sha512-PgQMlq+nqFLV4ylk1gwUOgm6CtIIXkKwaIHp/PAIWHzig/lKZSEGKEysh0TCVbHJXCLN7WetD8TFecIky75ZfQ=="
+        crossorigin="anonymous" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="./index.css">
+
+    <title>Quotes App</title>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="inner data-aos=zoom-in">
+            <div class="box">
+                <p class="number">
+                    <img id="tweetMe" src="Images/Tut23_Twitter.jpg" alt="tweetMe" title="TweetMe">
+                </p>
+                <div class="text">
+                  <i class="start-quote fas fa-quote-left"></i>
+                  <p id="quotes" class="quotes"></p>
+                  <p id="author" class="author"></p>
+                </div>
+                <label class="button">
+                     <p id="newQ">New Quotes</p>
+                </label>
+            </div>
+        </div>
+    </div>
+  
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+        const quotes = document.getElementById("quotes");
+        const author = document.getElementById("author");
+        const newQ = document.getElementById("newQ");
+        const tweetMe = document.getElementById("tweetMe");
+
+        let realData = "";
+        let quotesData = "";
+
+        const getNewQuotes = () => {
+            
+            const randNum = Math.floor(Math.random() * 20);
+            // console.log(randNum);
+            // console.log(realData[randNum].text);
+            // console.log(realData[randNum].author);
+            quotesData = realData[randNum];
+            quotes.innerText = `${quotesData.text}`;
+            // in API,some authors is having null to handle that
+            (quotesData.author == null) ? (author.innerText = `Unknown`) : (author.innerText = `${quotesData.author}`);
+        }
+
+          const tweetNow = () => {
+                    let tweetPost = `https://twitter.com/intent/tweet?text=${quotesData.text} ${quotesData.author}`;
+            // window.open will open the url
+            window.open(tweetPost);
+        }
+
+        const getQuotes = async () => {
+            const api = "https://type.fit/api/quotes";
+            try {
+                let data = await fetch(api);
+                // console.log(data);
+                
+                realData = await (data.json());
+
+               
+                getNewQuotes();
+
+                // console.log(realData);
+                // console.log(realData.length);
+                // console.log(realData[0]);
+                // console.log(realData[8].text);
+                // console.log(realData[8].author);
+
+            } catch (error) {
+                console.log(error);
+            }
+
+        }
+
+        
+        newQ.addEventListener('click', getNewQuotes);
+        tweetMe.addEventListener('click', tweetNow);
+
+        getQuotes();
+    </script>
+</body>
+
+</html>
